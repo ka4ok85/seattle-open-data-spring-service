@@ -22,11 +22,9 @@ public class CustomLocalDateTimeSerializer extends StdScalarSerializer<LocalDate
 
 	@Override
 	public void serialize(LocalDateTime value, JsonGenerator generator, SerializerProvider provide) throws IOException {
-		generator.writeStartObject();
 		ZoneId zoneId = ZoneId.of("America/Los_Angeles");
 		long timestamp = value.atZone(zoneId).toEpochSecond();
-		generator.writeStringField("timestamp", Long.toString(timestamp));
-		generator.writeEndObject();
+		generator.writeString(Long.toString(timestamp));
 	}
 
 }
