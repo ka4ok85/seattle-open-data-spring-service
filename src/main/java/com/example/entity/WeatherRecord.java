@@ -1,5 +1,6 @@
 package com.example.entity;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -14,7 +15,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 @Entity
 @Table(name = "weather_records")
-public class WeatherRecord {
+public class WeatherRecord implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
