@@ -2,13 +2,17 @@ package com.example.entity;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -36,6 +40,11 @@ public class Call {
     @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
     private LocalDateTime datetime;
 
+    @JsonIgnore
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="incident_number", referencedColumnName="incident_number", insertable=false, updatable=false)
+    private WeatherRecord weatherRecord;
+    
 	public Call() {
 	}
 
