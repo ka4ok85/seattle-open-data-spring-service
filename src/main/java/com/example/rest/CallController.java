@@ -21,7 +21,15 @@ public class CallController {
 	@RequestMapping(value = "/count/{days}", method = RequestMethod.GET, produces = "application/json")
 	public List<?> getCountsForPeriod(@PathVariable Long days) {
 		LocalDateTime dateTime = LocalDateTime.now().minusDays(days);
-		List<?> countsForPeriod = callRepository.getCountsDaily(dateTime);
+		List<?> countsForPeriod = callRepository.getCountsDailySinceDatetime(dateTime);
+
+		return countsForPeriod;
+	}
+
+	@RequestMapping(value = "/count/per-type/{days}", method = RequestMethod.GET, produces = "application/json")
+	public List<?> getCountsPerTypeForPeriod(@PathVariable Long days) {
+		LocalDateTime dateTime = LocalDateTime.now().minusDays(days);
+		List<?> countsForPeriod = callRepository.getCountsPerTypeSinceDatetime(dateTime);
 
 		return countsForPeriod;
 	}
