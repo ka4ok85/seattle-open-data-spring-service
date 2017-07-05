@@ -18,8 +18,11 @@ public interface CallRepository extends CrudRepository<Call, Long> {
 	@RestResource(path = "by-type")
 	Collection<Call> findByType(@Param("type") String type);
 
-	@Query(value = "select count(v), date(v.datetime) from Call v where v.datetime > :daysBeforeFormatted group by date(v.datetime)")
-	List<?> getCountsDaily(@Param("daysBeforeFormatted") LocalDateTime daysBeforeFormatted);
+	@Query(value = "select count(v), date(v.datetime) from Call v where v.datetime > :dateTime group by date(v.datetime)")
+	List<?> getCountsDailySinceDatetime(@Param("dateTime") LocalDateTime dateTime);
+	
+	@Query(value = "select count(v), v.type from Call v where v.datetime > :dateTime group by v.type")
+	List<?> getCountsPerTypeSinceDatetime(@Param("dateTime") LocalDateTime dateTime);
 
 	@Override
 	@RestResource(exported = false)
