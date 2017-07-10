@@ -21,13 +21,19 @@ public class CallController {
 
 	@RequestMapping(value = "/count/{days}", method = RequestMethod.GET, produces = "application/json")
 	public List<?> getCountsForPeriod(@PathVariable Long days,
-			@RequestParam(value = "type", required = false) String type) {
+			@RequestParam(value = "type", required = false) String type,
+			@RequestParam(value = "zip", required = false) String zip) {
 		LocalDateTime dateTime = LocalDateTime.now().minusDays(days);
 		List<?> countsForPeriod;
-		if (type == null) {
-			countsForPeriod = callRepository.getCountsDailySinceDatetime(dateTime);
-		} else {
+
+		if (type != null && zip != null) {
+			countsForPeriod = callRepository.getCountsByTypeAndZipDailySinceDatetime(type, zip, dateTime);
+		} else if (type != null && zip == null) {
 			countsForPeriod = callRepository.getCountsByTypeDailySinceDatetime(type, dateTime);
+		} else if (type == null && zip != null) {
+			countsForPeriod = callRepository.getCountsByZipDailySinceDatetime(zip, dateTime);
+		} else {
+			countsForPeriod = callRepository.getCountsDailySinceDatetime(dateTime);
 		}
 
 		return countsForPeriod;

@@ -24,12 +24,19 @@ public interface CallRepository extends CrudRepository<Call, Long> {
 	@Query(value = "select count(c), date(c.datetime) from Call c where c.type = :type AND c.datetime > :dateTime group by date(c.datetime)")
 	List<?> getCountsByTypeDailySinceDatetime(@Param("type") String type, @Param("dateTime") LocalDateTime dateTime);
 
+	@Query(value = "select count(c), date(c.datetime) from Call c JOIN c.weatherRecord w where w.zip = :zip AND c.datetime > :dateTime group by date(c.datetime)")
+	List<?> getCountsByZipDailySinceDatetime(@Param("zip") String zip, @Param("dateTime") LocalDateTime dateTime);
+
+	@Query(value = "select count(c), date(c.datetime) from Call c JOIN c.weatherRecord w where c.type = :type AND w.zip = :zip AND c.datetime > :dateTime group by date(c.datetime)")
+	List<?> getCountsByTypeAndZipDailySinceDatetime(@Param("type") String type, @Param("zip") String zip,
+			@Param("dateTime") LocalDateTime dateTime);
+
 	@Query(value = "select count(c), c.type from Call c where c.datetime > :dateTime group by c.type")
 	List<?> getCountsPerTypeSinceDatetime(@Param("dateTime") LocalDateTime dateTime);
 
 	@Query(value = "select count(c), w.zip from Call c JOIN c.weatherRecord w where c.datetime > :dateTime group by w.zip")
 	List<?> getCountsPerZipSinceDatetime(@Param("dateTime") LocalDateTime dateTime);
-	
+
 	@Override
 	@RestResource(exported = false)
 	void delete(Long id);
