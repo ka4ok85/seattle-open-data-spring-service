@@ -18,15 +18,18 @@ public interface CallRepository extends CrudRepository<Call, Long> {
 	@RestResource(path = "by-type")
 	Collection<Call> findByType(@Param("type") String type);
 
-	@Query(value = "select count(v), date(v.datetime) from Call v where v.datetime > :dateTime group by date(v.datetime)")
+	@Query(value = "select count(c), date(c.datetime) from Call c where c.datetime > :dateTime group by date(c.datetime)")
 	List<?> getCountsDailySinceDatetime(@Param("dateTime") LocalDateTime dateTime);
 
-	@Query(value = "select count(v), date(v.datetime) from Call v where v.type = :type AND v.datetime > :dateTime group by date(v.datetime)")
+	@Query(value = "select count(c), date(c.datetime) from Call c where c.type = :type AND c.datetime > :dateTime group by date(c.datetime)")
 	List<?> getCountsByTypeDailySinceDatetime(@Param("type") String type, @Param("dateTime") LocalDateTime dateTime);
 
-	@Query(value = "select count(v), v.type from Call v where v.datetime > :dateTime group by v.type")
+	@Query(value = "select count(c), c.type from Call c where c.datetime > :dateTime group by c.type")
 	List<?> getCountsPerTypeSinceDatetime(@Param("dateTime") LocalDateTime dateTime);
 
+	@Query(value = "select count(c), w.zip from Call c JOIN c.weatherRecord w where c.datetime > :dateTime group by w.zip")
+	List<?> getCountsPerZipSinceDatetime(@Param("dateTime") LocalDateTime dateTime);
+	
 	@Override
 	@RestResource(exported = false)
 	void delete(Long id);

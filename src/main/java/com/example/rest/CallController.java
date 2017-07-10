@@ -20,7 +20,8 @@ public class CallController {
 	private CallRepository callRepository;
 
 	@RequestMapping(value = "/count/{days}", method = RequestMethod.GET, produces = "application/json")
-	public List<?> getCountsForPeriod(@PathVariable Long days, @RequestParam(value = "type", required = false) String type) {
+	public List<?> getCountsForPeriod(@PathVariable Long days,
+			@RequestParam(value = "type", required = false) String type) {
 		LocalDateTime dateTime = LocalDateTime.now().minusDays(days);
 		List<?> countsForPeriod;
 		if (type == null) {
@@ -39,4 +40,13 @@ public class CallController {
 
 		return countsForPeriod;
 	}
+
+	@RequestMapping(value = "/count/per-zip/{days}", method = RequestMethod.GET, produces = "application/json")
+	public List<?> getCountsPerZipForPeriod(@PathVariable Long days) {
+		LocalDateTime dateTime = LocalDateTime.now().minusDays(days);
+		List<?> countsForPeriod = callRepository.getCountsPerZipSinceDatetime(dateTime);
+
+		return countsForPeriod;
+	}
+
 }
