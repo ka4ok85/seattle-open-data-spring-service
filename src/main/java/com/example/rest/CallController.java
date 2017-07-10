@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.repository.CallRepository;
@@ -19,9 +20,14 @@ public class CallController {
 	private CallRepository callRepository;
 
 	@RequestMapping(value = "/count/{days}", method = RequestMethod.GET, produces = "application/json")
-	public List<?> getCountsForPeriod(@PathVariable Long days) {
+	public List<?> getCountsForPeriod(@PathVariable Long days, @RequestParam(value = "type", required = false) String type) {
 		LocalDateTime dateTime = LocalDateTime.now().minusDays(days);
-		List<?> countsForPeriod = callRepository.getCountsDailySinceDatetime(dateTime);
+		List<?> countsForPeriod;
+		if (type == null) {
+			countsForPeriod = callRepository.getCountsDailySinceDatetime(dateTime);
+		} else {
+			countsForPeriod = callRepository.getCountsByTypeDailySinceDatetime(type, dateTime);
+		}
 
 		return countsForPeriod;
 	}

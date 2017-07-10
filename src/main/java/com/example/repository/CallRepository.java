@@ -20,7 +20,10 @@ public interface CallRepository extends CrudRepository<Call, Long> {
 
 	@Query(value = "select count(v), date(v.datetime) from Call v where v.datetime > :dateTime group by date(v.datetime)")
 	List<?> getCountsDailySinceDatetime(@Param("dateTime") LocalDateTime dateTime);
-	
+
+	@Query(value = "select count(v), date(v.datetime) from Call v where v.type = :type AND v.datetime > :dateTime group by date(v.datetime)")
+	List<?> getCountsByTypeDailySinceDatetime(@Param("type") String type, @Param("dateTime") LocalDateTime dateTime);
+
 	@Query(value = "select count(v), v.type from Call v where v.datetime > :dateTime group by v.type")
 	List<?> getCountsPerTypeSinceDatetime(@Param("dateTime") LocalDateTime dateTime);
 
