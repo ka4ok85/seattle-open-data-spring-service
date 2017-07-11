@@ -37,6 +37,9 @@ public interface CallRepository extends CrudRepository<Call, Long> {
 	@Query(value = "select count(c), w.zip from Call c JOIN c.weatherRecord w where c.datetime > :dateTime group by w.zip")
 	List<?> getCountsPerZipSinceDatetime(@Param("dateTime") LocalDateTime dateTime);
 
+	@Query(value = "select count(c), w.zip from Call c JOIN c.weatherRecord w where c.type = :type AND c.datetime > :dateTime group by w.zip")
+	List<?> getCountsPerZipByTypeSinceDatetime(@Param("type") String type, @Param("dateTime") LocalDateTime dateTime);
+
 	@Override
 	@RestResource(exported = false)
 	void delete(Long id);
