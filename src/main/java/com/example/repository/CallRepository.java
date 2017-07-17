@@ -18,6 +18,7 @@ public interface CallRepository extends CrudRepository<Call, Long> {
 	@RestResource(path = "by-type")
 	Collection<Call> findByType(@Param("type") String type);
 
+	/* Simple past n days queries */
 	@Query(value = "select count(c), date(c.datetime) from Call c where c.datetime > :dateTime group by date(c.datetime)")
 	List<?> getCountsDailySinceDatetime(@Param("dateTime") LocalDateTime dateTime);
 
@@ -33,7 +34,7 @@ public interface CallRepository extends CrudRepository<Call, Long> {
 
 	@Query(value = "select count(c), c.type from Call c where c.datetime > :dateTime group by c.type")
 	List<?> getCountsPerTypeSinceDatetime(@Param("dateTime") LocalDateTime dateTime);
-	
+
 	@Query(value = "select count(c), c.type from Call c JOIN c.weatherRecord w where w.zip = :zip AND c.datetime > :dateTime group by c.type")
 	List<?> getCountsPerTypeByZipSinceDatetime(@Param("zip") String zip, @Param("dateTime") LocalDateTime dateTime);
 
@@ -42,6 +43,39 @@ public interface CallRepository extends CrudRepository<Call, Long> {
 
 	@Query(value = "select count(c), w.zip from Call c JOIN c.weatherRecord w where c.type = :type AND c.datetime > :dateTime group by w.zip")
 	List<?> getCountsPerZipByTypeSinceDatetime(@Param("type") String type, @Param("dateTime") LocalDateTime dateTime);
+
+	/* Between start and end days queries */
+	@Query(value = "select count(c), date(c.datetime) from Call c where c.datetime between :startDateTime and :endDateTime group by date(c.datetime)")
+	List<?> getCountsDailyBetweenDatetimes(@Param("startDateTime") LocalDateTime startDateTime,
+			@Param("endDateTime") LocalDateTime endDateTime);
+
+	@Query(value = "select count(c), date(c.datetime) from Call c where c.type = :type AND c.datetime between :startDateTime and :endDateTime group by date(c.datetime)")
+	List<?> getCountsByTypeDailyBetweenDatetimes(@Param("type") String type,
+			@Param("startDateTime") LocalDateTime startDateTime, @Param("endDateTime") LocalDateTime endDateTime);
+
+	@Query(value = "select count(c), date(c.datetime) from Call c JOIN c.weatherRecord w where w.zip = :zip AND c.datetime between :startDateTime and :endDateTime group by date(c.datetime)")
+	List<?> getCountsByZipDailyBetweenDatetimes(@Param("zip") String zip,
+			@Param("startDateTime") LocalDateTime startDateTime, @Param("endDateTime") LocalDateTime endDateTime);
+
+	@Query(value = "select count(c), date(c.datetime) from Call c JOIN c.weatherRecord w where c.type = :type AND w.zip = :zip AND c.datetime between :startDateTime and :endDateTime group by date(c.datetime)")
+	List<?> getCountsByTypeAndZipDailyBetweenDatetimes(@Param("type") String type, @Param("zip") String zip,
+			@Param("startDateTime") LocalDateTime startDateTime, @Param("endDateTime") LocalDateTime endDateTime);
+
+	@Query(value = "select count(c), c.type from Call c where c.datetime between :startDateTime and :endDateTime group by c.type")
+	List<?> getCountsPerTypeBetweenDatetimes(@Param("startDateTime") LocalDateTime startDateTime,
+			@Param("endDateTime") LocalDateTime endDateTime);
+
+	@Query(value = "select count(c), c.type from Call c JOIN c.weatherRecord w where w.zip = :zip AND c.datetime between :startDateTime and :endDateTime group by c.type")
+	List<?> getCountsPerTypeByZipBetweenDatetimes(@Param("zip") String zip,
+			@Param("startDateTime") LocalDateTime startDateTime, @Param("endDateTime") LocalDateTime endDateTime);
+
+	@Query(value = "select count(c), w.zip from Call c JOIN c.weatherRecord w where c.datetime between :startDateTime and :endDateTime group by w.zip")
+	List<?> getCountsPerZipBetweenDatetimes(@Param("startDateTime") LocalDateTime startDateTime,
+			@Param("endDateTime") LocalDateTime endDateTime);
+
+	@Query(value = "select count(c), w.zip from Call c JOIN c.weatherRecord w where c.type = :type AND c.datetime between :startDateTime and :endDateTime group by w.zip")
+	List<?> getCountsPerZipByTypeBetweenDatetimes(@Param("type") String type,
+			@Param("startDateTime") LocalDateTime startDateTime, @Param("endDateTime") LocalDateTime endDateTime);
 
 	@Override
 	@RestResource(exported = false)
