@@ -3,6 +3,7 @@ package com.example.rest;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.exceptions.BadRequestException;
 import com.example.repository.CallRepository;
 
 @RestController
@@ -26,9 +28,15 @@ public class CallController {
 			@RequestParam(value = "type", required = false) String type,
 			@RequestParam(value = "zip", required = false) String zip) {
 
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-		LocalDateTime startDateTime = LocalDateTime.from(LocalDate.parse(startDate, formatter).atStartOfDay());
-		LocalDateTime endDateTime = LocalDateTime.from(LocalDate.parse(endDate, formatter).atStartOfDay().plusDays(1L)); // we
+		LocalDateTime startDateTime;
+		LocalDateTime endDateTime;
+		try {
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+			startDateTime = LocalDateTime.from(LocalDate.parse(startDate, formatter).atStartOfDay());
+			endDateTime = LocalDateTime.from(LocalDate.parse(endDate, formatter).atStartOfDay().plusDays(1L));
+		} catch (DateTimeParseException exception) {
+			throw new BadRequestException("Start Date and End Date must follow YYYY-MM-DD format");
+		}
 
 		List<?> countsForPeriod;
 
@@ -50,10 +58,16 @@ public class CallController {
 	public List<?> getCountsPerTypeForPeriod(@PathVariable String startDate, @PathVariable String endDate,
 			@RequestParam(value = "zip", required = false) String zip) {
 
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-		LocalDateTime startDateTime = LocalDateTime.from(LocalDate.parse(startDate, formatter).atStartOfDay());
-		LocalDateTime endDateTime = LocalDateTime.from(LocalDate.parse(endDate, formatter).atStartOfDay().plusDays(1L)); // we
-																															// want
+		LocalDateTime startDateTime;
+		LocalDateTime endDateTime;
+		try {
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+			startDateTime = LocalDateTime.from(LocalDate.parse(startDate, formatter).atStartOfDay());
+			endDateTime = LocalDateTime.from(LocalDate.parse(endDate, formatter).atStartOfDay().plusDays(1L));
+		} catch (DateTimeParseException exception) {
+			throw new BadRequestException("Start Date and End Date must follow YYYY-MM-DD format");
+		}
+		
 		List<?> countsForPeriod;
 
 		if (zip != null) {
@@ -69,9 +83,15 @@ public class CallController {
 	public List<?> getCountsPerZipForPeriod(@PathVariable String startDate, @PathVariable String endDate,
 			@RequestParam(value = "type", required = false) String type) {
 
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-		LocalDateTime startDateTime = LocalDateTime.from(LocalDate.parse(startDate, formatter).atStartOfDay());
-		LocalDateTime endDateTime = LocalDateTime.from(LocalDate.parse(endDate, formatter).atStartOfDay().plusDays(1L)); // we
+		LocalDateTime startDateTime;
+		LocalDateTime endDateTime;
+		try {
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+			startDateTime = LocalDateTime.from(LocalDate.parse(startDate, formatter).atStartOfDay());
+			endDateTime = LocalDateTime.from(LocalDate.parse(endDate, formatter).atStartOfDay().plusDays(1L));
+		} catch (DateTimeParseException exception) {
+			throw new BadRequestException("Start Date and End Date must follow YYYY-MM-DD format");
+		}
 
 		List<?> countsForPeriod;
 
