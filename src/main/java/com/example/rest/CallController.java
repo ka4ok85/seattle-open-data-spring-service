@@ -41,12 +41,21 @@ public class CallController {
 		List<?> countsForPeriod;
 
 		if (type != null && zip != null) {
-			countsForPeriod = callRepository.getCountsByTypeAndZipDailyBetweenDatetimes(type, zip, startDateTime,
-					endDateTime);
+			if (zip.equals("0")) {
+				countsForPeriod = callRepository.getCountsByTypeAndNullZipDailyBetweenDatetimes(type, startDateTime,
+						endDateTime);
+			} else {
+				countsForPeriod = callRepository.getCountsByTypeAndZipDailyBetweenDatetimes(type, zip, startDateTime,
+						endDateTime);
+			}
 		} else if (type != null && zip == null) {
 			countsForPeriod = callRepository.getCountsByTypeDailyBetweenDatetimes(type, startDateTime, endDateTime);
 		} else if (type == null && zip != null) {
-			countsForPeriod = callRepository.getCountsByZipDailyBetweenDatetimes(zip, startDateTime, endDateTime);
+			if (zip.equals("0")) {
+				countsForPeriod = callRepository.getCountsByNullZipDailyBetweenDatetimes(startDateTime, endDateTime);
+			} else {
+				countsForPeriod = callRepository.getCountsByZipDailyBetweenDatetimes(zip, startDateTime, endDateTime);
+			}
 		} else {
 			countsForPeriod = callRepository.getCountsDailyBetweenDatetimes(startDateTime, endDateTime);
 		}
@@ -67,11 +76,15 @@ public class CallController {
 		} catch (DateTimeParseException exception) {
 			throw new BadRequestException("Start Date and End Date must follow YYYY-MM-DD format");
 		}
-		
+
 		List<?> countsForPeriod;
 
 		if (zip != null) {
-			countsForPeriod = callRepository.getCountsPerTypeByZipBetweenDatetimes(zip, startDateTime, endDateTime);
+			if (zip.equals("0")) {
+				countsForPeriod = callRepository.getCountsPerTypeByNullZipBetweenDatetimes(startDateTime, endDateTime);
+			} else {
+				countsForPeriod = callRepository.getCountsPerTypeByZipBetweenDatetimes(zip, startDateTime, endDateTime);
+			}
 		} else {
 			countsForPeriod = callRepository.getCountsPerTypeBetweenDatetimes(startDateTime, endDateTime);
 		}
