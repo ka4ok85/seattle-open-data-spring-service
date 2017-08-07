@@ -26,7 +26,8 @@ public class CallController {
 	@RequestMapping(value = "/count/{startDate}/{endDate}", method = RequestMethod.GET, produces = "application/json")
 	public List<?> getCountsBetweenDates(@PathVariable String startDate, @PathVariable String endDate,
 			@RequestParam(value = "type", required = false) String type,
-			@RequestParam(value = "zip", required = false) String zip) {
+			@RequestParam(value = "zip", required = false) String zip,
+			@RequestParam(value = "hourly", required = false) String hourly) {
 
 		LocalDateTime startDateTime;
 		LocalDateTime endDateTime;
@@ -57,7 +58,11 @@ public class CallController {
 				countsForPeriod = callRepository.getCountsByZipDailyBetweenDatetimes(zip, startDateTime, endDateTime);
 			}
 		} else {
-			countsForPeriod = callRepository.getCountsDailyBetweenDatetimes(startDateTime, endDateTime);
+			if (hourly != null) {
+				countsForPeriod = callRepository.getCountsHourlyBetweenDatetimes(startDateTime, endDateTime);
+			} else {
+				countsForPeriod = callRepository.getCountsDailyBetweenDatetimes(startDateTime, endDateTime);
+			}
 		}
 
 		return countsForPeriod;
