@@ -49,6 +49,10 @@ public interface CallRepository extends CrudRepository<Call, Long> {
 	List<?> getCountsDailyBetweenDatetimes(@Param("startDateTime") LocalDateTime startDateTime,
 			@Param("endDateTime") LocalDateTime endDateTime);
 
+	@Query(value = "select count(c), DATE_FORMAT(c.datetime,'%H') from Call c where c.datetime between :startDateTime and :endDateTime GROUP BY DATE_FORMAT(c.datetime,'%H')")
+	List<?> getCountsHourlyBetweenDatetimes(@Param("startDateTime") LocalDateTime startDateTime,
+			@Param("endDateTime") LocalDateTime endDateTime);
+		
 	@Query(value = "select count(c), date(c.datetime) from Call c where c.type = :type AND c.datetime between :startDateTime and :endDateTime group by date(c.datetime)")
 	List<?> getCountsByTypeDailyBetweenDatetimes(@Param("type") String type,
 			@Param("startDateTime") LocalDateTime startDateTime, @Param("endDateTime") LocalDateTime endDateTime);
