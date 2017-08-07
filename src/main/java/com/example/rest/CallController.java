@@ -50,7 +50,11 @@ public class CallController {
 						endDateTime);
 			}
 		} else if (type != null && zip == null) {
-			countsForPeriod = callRepository.getCountsByTypeDailyBetweenDatetimes(type, startDateTime, endDateTime);
+			if (hourly != null) {
+				countsForPeriod = callRepository.getCountsByTypeHourlyBetweenDatetimes(type, startDateTime, endDateTime);
+			} else {
+				countsForPeriod = callRepository.getCountsByTypeDailyBetweenDatetimes(type, startDateTime, endDateTime);
+			}
 		} else if (type == null && zip != null) {
 			if (zip.equals("0")) {
 				countsForPeriod = callRepository.getCountsByNullZipDailyBetweenDatetimes(startDateTime, endDateTime);
