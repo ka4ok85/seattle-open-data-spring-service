@@ -65,16 +65,32 @@ public interface CallRepository extends CrudRepository<Call, Long> {
 	List<?> getCountsByZipDailyBetweenDatetimes(@Param("zip") String zip,
 			@Param("startDateTime") LocalDateTime startDateTime, @Param("endDateTime") LocalDateTime endDateTime);
 
+	@Query(value = "select count(c), DATE_FORMAT(c.datetime,'%H') from Call c JOIN c.weatherRecord w where w.zip = :zip AND c.datetime between :startDateTime and :endDateTime group by DATE_FORMAT(c.datetime,'%H')")
+	List<?> getCountsByZipHourlyBetweenDatetimes(@Param("zip") String zip,
+			@Param("startDateTime") LocalDateTime startDateTime, @Param("endDateTime") LocalDateTime endDateTime);
+
 	@Query(value = "select count(c), date(c.datetime) from Call c JOIN c.weatherRecord w where w.zip IS NULL AND c.datetime between :startDateTime and :endDateTime group by date(c.datetime)")
 	List<?> getCountsByNullZipDailyBetweenDatetimes(@Param("startDateTime") LocalDateTime startDateTime,
+			@Param("endDateTime") LocalDateTime endDateTime);
+
+	@Query(value = "select count(c), DATE_FORMAT(c.datetime,'%H') from Call c JOIN c.weatherRecord w where w.zip IS NULL AND c.datetime between :startDateTime and :endDateTime group by DATE_FORMAT(c.datetime,'%H')")
+	List<?> getCountsByNullZipHourlyBetweenDatetimes(@Param("startDateTime") LocalDateTime startDateTime,
 			@Param("endDateTime") LocalDateTime endDateTime);
 
 	@Query(value = "select count(c), date(c.datetime) from Call c JOIN c.weatherRecord w where c.type = :type AND w.zip = :zip AND c.datetime between :startDateTime and :endDateTime group by date(c.datetime)")
 	List<?> getCountsByTypeAndZipDailyBetweenDatetimes(@Param("type") String type, @Param("zip") String zip,
 			@Param("startDateTime") LocalDateTime startDateTime, @Param("endDateTime") LocalDateTime endDateTime);
 
+	@Query(value = "select count(c), DATE_FORMAT(c.datetime,'%H') from Call c JOIN c.weatherRecord w where c.type = :type AND w.zip = :zip AND c.datetime between :startDateTime and :endDateTime group by DATE_FORMAT(c.datetime,'%H')")
+	List<?> getCountsByTypeAndZipHourlyBetweenDatetimes(@Param("type") String type, @Param("zip") String zip,
+			@Param("startDateTime") LocalDateTime startDateTime, @Param("endDateTime") LocalDateTime endDateTime);
+
 	@Query(value = "select count(c), date(c.datetime) from Call c JOIN c.weatherRecord w where c.type = :type AND w.zip IS NULL AND c.datetime between :startDateTime and :endDateTime group by date(c.datetime)")
 	List<?> getCountsByTypeAndNullZipDailyBetweenDatetimes(@Param("type") String type,
+			@Param("startDateTime") LocalDateTime startDateTime, @Param("endDateTime") LocalDateTime endDateTime);
+
+	@Query(value = "select count(c), DATE_FORMAT(c.datetime,'%H') from Call c JOIN c.weatherRecord w where c.type = :type AND w.zip IS NULL AND c.datetime between :startDateTime and :endDateTime group by DATE_FORMAT(c.datetime,'%H')")
+	List<?> getCountsByTypeAndNullZipHourlyBetweenDatetimes(@Param("type") String type,
 			@Param("startDateTime") LocalDateTime startDateTime, @Param("endDateTime") LocalDateTime endDateTime);
 
 	@Query(value = "select count(c), c.type from Call c where c.datetime between :startDateTime and :endDateTime group by c.type")
