@@ -41,47 +41,58 @@ public class CallController {
 
 		List<?> countsForPeriod;
 
-		if (type != null && zip != null && zip.equals("0")) {
-System.out.println("1");
-			return countsForPeriod = callRepository.getCountsByTypeAndNullZipDailyBetweenDatetimes(type, startDateTime,
+		if (type != null && zip != null && zip.equals("0") && hourly != null) {
+			return countsForPeriod = callRepository.getCountsByTypeAndNullZipHourlyBetweenDatetimes(type, startDateTime,
 					endDateTime);
 		}
 
-		if (type != null && zip != null && zip.equals("0") == false) {
-			System.out.println("2");
+		if (type != null && zip != null && zip.equals("0") && hourly == null) {
+			return countsForPeriod = callRepository.getCountsByTypeAndNullZipDailyBetweenDatetimes(type, startDateTime,
+					endDateTime);
+		}
+		
+		if (type != null && zip != null && zip.equals("0") == false && hourly != null) {
+			return countsForPeriod = callRepository.getCountsByTypeAndZipHourlyBetweenDatetimes(type, zip, startDateTime,
+					endDateTime);
+		}
+
+		if (type != null && zip != null && zip.equals("0") == false && hourly == null) {
 			return countsForPeriod = callRepository.getCountsByTypeAndZipDailyBetweenDatetimes(type, zip, startDateTime,
 					endDateTime);
 		}
 
 		if (type != null && zip == null && hourly != null) {
-			System.out.println("3");
 			return countsForPeriod = callRepository.getCountsByTypeHourlyBetweenDatetimes(type, startDateTime,
 					endDateTime);
 		}
 
 		if (type != null && zip == null && hourly == null) {
-			System.out.println("4");
 			return countsForPeriod = callRepository.getCountsByTypeDailyBetweenDatetimes(type, startDateTime,
 					endDateTime);
 		}
 
-		if (type == null && zip != null && zip.equals("0")) {
-			System.out.println("5");
+		if (type == null && zip != null && zip.equals("0") && hourly != null) {
+			return countsForPeriod = callRepository.getCountsByNullZipHourlyBetweenDatetimes(startDateTime, endDateTime);
+		}
+
+		if (type == null && zip != null && zip.equals("0") && hourly == null) {
 			return countsForPeriod = callRepository.getCountsByNullZipDailyBetweenDatetimes(startDateTime, endDateTime);
 		}
 
-		if (type == null && zip != null && zip.equals("0") == false) {
-			System.out.println("6");
+		if (type == null && zip != null && zip.equals("0") == false && hourly != null) {
+			return countsForPeriod = callRepository.getCountsByZipHourlyBetweenDatetimes(zip, startDateTime,
+					endDateTime);
+		}
+
+		if (type == null && zip != null && zip.equals("0") == false && hourly == null) {
 			return countsForPeriod = callRepository.getCountsByZipDailyBetweenDatetimes(zip, startDateTime,
 					endDateTime);
 		}
 
 		if (type == null && zip == null && hourly != null) {
-			System.out.println("7");
 			return countsForPeriod = callRepository.getCountsHourlyBetweenDatetimes(startDateTime, endDateTime);
 		}
 
-		System.out.println("8");
 		return countsForPeriod = callRepository.getCountsDailyBetweenDatetimes(startDateTime, endDateTime);
 	}
 
