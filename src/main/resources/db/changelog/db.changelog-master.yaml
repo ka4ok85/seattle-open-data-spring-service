@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 1
+      id: 7
       author: evgeny
       comment: "Creating 'users' table"
       changes:
@@ -33,7 +33,7 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: role
-                  type: varchat(10)
+                  type: varchar(10)
                   constraints:
                     nullable: false
               - column:
