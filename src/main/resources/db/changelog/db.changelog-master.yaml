@@ -85,4 +85,13 @@ databaseChangeLog:
             onUpdate: RESTRICT
             referencedColumnNames: id
             referencedTableName: users
-                    
+  - changeSet:
+      id: 9
+      author: evgeny
+      comment: "Renaming 'issued_at' field"
+      changes:
+      - renameColumn:
+          columnDataType: datetime
+          newColumnName: valid_until
+          oldColumnName: issued_at
+          tableName: refresh_tokens
