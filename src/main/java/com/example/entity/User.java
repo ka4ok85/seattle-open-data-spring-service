@@ -14,6 +14,12 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 @Table(name = "users")
 public class User {
 
+	public final static String STATUS_ENABLED = "enabled";
+	public final static String STATUS_DISABLED = "disabled";
+
+	public final static String ROLE_ADMIN = "admin";
+	public final static String ROLE_USER = "user";
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -25,6 +31,8 @@ public class User {
 	private String status;
 
 	private String role;
+
+	private String password;
 
 	@Column(name = "created_at")
 	@JsonDeserialize(using = CustomLocalDateTimeDeserializer.class)
@@ -80,6 +88,14 @@ public class User {
 
 	public void setCreatedAt(String createdAt) {
 		this.createdAt = createdAt;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public boolean isAdmin() {
+		return role.equals(ROLE_ADMIN);
 	}
 
 	@Override
