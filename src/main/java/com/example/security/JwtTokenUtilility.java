@@ -19,18 +19,13 @@ import io.jsonwebtoken.impl.crypto.MacProvider;
 
 @Component
 public class JwtTokenUtilility {
-
-	// "standard" claims
-	private static final String CLAIM_KEY_ISSUER = "iss";
-	private static final String CLAIM_KEY_USERNAME = "sub";
-	private static final String CLAIM_KEY_AUDIENCE = "aud";
-    private static final String CLAIM_KEY_CREATED = "iat";
-    private static final String CLAIM_KEY_EXPIRED = "exp";
     
     // public (i.e. custom) tokens
-    private static final String CLAIM_KEY_STORE_ID = "store";
-    private static final String CLAIM_KEY_IS_ADMIN = "admin";
-    private static final String CLAIM_KEY_USERID = "user_id";
+	private static final String CLAIM_KEY_ROLE = "rol";
+	
+    //private static final String CLAIM_KEY_STORE_ID = "store";
+    //private static final String CLAIM_KEY_IS_ADMIN = "admin";
+    //private static final String CLAIM_KEY_USERID = "user_id";
 
     private static final String AUDIENCE_UNKNOWN = "unknown";
     private static final String AUDIENCE_WEB = "web";
@@ -57,7 +52,7 @@ public class JwtTokenUtilility {
 
         return username;
     }
-
+/*
     public Date getCreatedDateFromToken(String token) {
         Date created;
         try {
@@ -69,7 +64,7 @@ public class JwtTokenUtilility {
         
         return created;
     }
-
+*/
     public Date getExpirationDateFromToken(String token) {
         Date expiration;
         try {
@@ -82,6 +77,7 @@ public class JwtTokenUtilility {
         return expiration;
     }
 
+/*
     public String getAudienceFromToken(String token) {
         String audience;
         try {
@@ -93,7 +89,7 @@ public class JwtTokenUtilility {
         
         return audience;
     }
-
+*/
     
     private Claims getClaimsFromToken(String token) {
         Claims claims;
@@ -139,34 +135,44 @@ public class JwtTokenUtilility {
         return audience;
     }
 
-    private Boolean ignoreTokenExpiration(String token) {
-        String audience = getAudienceFromToken(token);
-        return (AUDIENCE_TABLET.equals(audience) || AUDIENCE_MOBILE.equals(audience));
-    }
-
-
     public String generateToken(JwtUser userDetails, Device device) {
-        Map<String, Object> claims = new HashMap<>();
-        claims.put(CLAIM_KEY_ISSUER, SeattleOpenDataSpringServiceApplication.class);
-        claims.put(CLAIM_KEY_USERNAME, userDetails.getUsername());
-        claims.put(CLAIM_KEY_AUDIENCE, generateAudience(device));
-        claims.put(CLAIM_KEY_CREATED, new Date().getTime()/1000);
-        claims.put(CLAIM_KEY_EXPIRED, generateExpirationDate().getTime()/1000);
+    	Map<String, Object> claims = new HashMap<>();
+        claims.put(CLAIM_KEY_ROLE, userDetails.getRole());
+
+        String compactJws = Jwts.builder()
+    			  .setIssuer(SeattleOpenDataSpringServiceApplication.class.getName())
+    	    	  .setSubject(userDetails.getUsername())
+    	    	  .setAudience(generateAudience(device))
+    	    	  .setExpiration(generateExpirationDate())
+    	    	  .setIssuedAt(new Date(System.currentTimeMillis()))
+    	    	  .setClaims(claims)
+    	    	  .signWith(SignatureAlgorithm.HS512, secret)
+    	    	  .compact();
+  
+    	return compactJws;
+/*    	
+    	Map<String, Object> claims = new HashMap<>();
         claims.put(CLAIM_KEY_USERID, userDetails.getId());
         claims.put(CLAIM_KEY_STORE_ID, userDetails.getStoreId());
         claims.put(CLAIM_KEY_IS_ADMIN, userDetails.getIsAdmin());
 
         return generateToken(claims);
+*/
     }
-
+/*
     private String generateToken(Map<String, Object> claims) {
-        return Jwts.builder()
+
+    	//Key key = MacProvider.generateKey();
+
+
+    	
+    	return Jwts.builder()
                 .setClaims(claims)
                 .setExpiration(generateExpirationDate())
                 .signWith(SignatureAlgorithm.HS512, secret)
                 .compact();
     }
-
+*/
 
 
     public Boolean validateToken(String token, UserDetails userDetails) {
