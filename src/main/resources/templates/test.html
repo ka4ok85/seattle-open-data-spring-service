@@ -1,0 +1,44 @@
+<html>
+<head>
+<script
+src="https://code.jquery.com/jquery-3.2.1.min.js"
+			  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+			  crossorigin="anonymous">
+</script>
+<script>
+function submitform (){
+$.ajax({
+    url: 'http://localhost:8000/auth',
+    type: "POST",
+    processData: true,
+    data: '{username:"admin", password:"s3cr3t"}',
+    dataType: "json",
+    contentType: "application/json",
+    crossDomain: true,
+    xhrFields: {
+        withCredentials: true
+    },
+    success: function (a, b, c) {
+        // Do something with response
+    }
+});
+
+}
+</script>
+
+
+</head>
+
+
+<body>
+<form action="http://localhost:8000/auth" method="POST" id="myForm">
+<input name="username" type="text" value="admin111" />
+<input name="password" type="text" value="s3cr3t" />
+
+
+<input type="submit" onclick="submitform(); return false;" />
+
+
+</form>
+</body>
+</html>
