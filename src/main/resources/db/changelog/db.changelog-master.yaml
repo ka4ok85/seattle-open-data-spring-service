@@ -95,3 +95,16 @@ databaseChangeLog:
           newColumnName: valid_until
           oldColumnName: issued_at
           tableName: refresh_tokens
+  - changeSet:
+      id: 10
+      author: evgeny
+      comment: "Adding 'password' field to users table"
+      changes:
+      - addColumn:
+          columns:
+          - column:
+              name: password
+              type: varchar(255)
+              constraints:
+                nullable: false
+          tableName: users
