@@ -2,14 +2,10 @@ package com.example.security;
 
 import java.security.Key;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.mobile.device.Device;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import com.example.SeattleOpenDataSpringServiceApplication;
 import com.example.models.JwtUser;
 
 import io.jsonwebtoken.Claims;
@@ -22,15 +18,13 @@ public class JwtTokenUtilility {
     
     // public (i.e. custom) tokens
 	private static final String CLAIM_KEY_ROLE = "rol";
-	
-    //private static final String CLAIM_KEY_STORE_ID = "store";
-    //private static final String CLAIM_KEY_IS_ADMIN = "admin";
-    //private static final String CLAIM_KEY_USERID = "user_id";
 
     private static final String AUDIENCE_UNKNOWN = "unknown";
     private static final String AUDIENCE_WEB = "web";
     private static final String AUDIENCE_MOBILE = "mobile";
     private static final String AUDIENCE_TABLET = "tablet";
+    
+    private static final String ISSUER = "SeattleOpenData";
 
     private Key secret = MacProvider.generateKey();
     private Long expiration = 3600L; // 1 hour
@@ -136,44 +130,18 @@ public class JwtTokenUtilility {
     }
 
     public String generateToken(JwtUser userDetails, Device device) {
-    	Map<String, Object> claims = new HashMap<>();
-        claims.put(CLAIM_KEY_ROLE, userDetails.getRole());
-
         String compactJws = Jwts.builder()
-    			  .setIssuer(SeattleOpenDataSpringServiceApplication.class.getName())
+    			  .setIssuer(ISSUER)
     	    	  .setSubject(userDetails.getUsername())
     	    	  .setAudience(generateAudience(device))
     	    	  .setExpiration(generateExpirationDate())
     	    	  .setIssuedAt(new Date(System.currentTimeMillis()))
-    	    	  .setClaims(claims)
+    	    	  .claim(CLAIM_KEY_ROLE, userDetails.getRole())
     	    	  .signWith(SignatureAlgorithm.HS512, secret)
     	    	  .compact();
   
     	return compactJws;
-/*    	
-    	Map<String, Object> claims = new HashMap<>();
-        claims.put(CLAIM_KEY_USERID, userDetails.getId());
-        claims.put(CLAIM_KEY_STORE_ID, userDetails.getStoreId());
-        claims.put(CLAIM_KEY_IS_ADMIN, userDetails.getIsAdmin());
-
-        return generateToken(claims);
-*/
     }
-/*
-    private String generateToken(Map<String, Object> claims) {
-
-    	//Key key = MacProvider.generateKey();
-
-
-    	
-    	return Jwts.builder()
-                .setClaims(claims)
-                .setExpiration(generateExpirationDate())
-                .signWith(SignatureAlgorithm.HS512, secret)
-                .compact();
-    }
-*/
-
 
     public Boolean validateToken(String token, UserDetails userDetails) {
 
