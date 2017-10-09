@@ -3,12 +3,14 @@ package com.example.rest;
 import java.io.IOException;
 import java.util.Date;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mobile.device.Device;
@@ -31,7 +33,7 @@ import com.example.models.JwtUser;
 import com.example.security.UserServiceImpl;
 import com.example.security.WebAuthenticationDetailsSourceImpl;
 
-@RestController("AuthenticationControllerV1")
+@RestController("AuthenticationController")
 public class AuthenticationController {
 	
 	private static final Logger log = LoggerFactory.getLogger(AuthenticationController.class);
@@ -82,11 +84,23 @@ public class AuthenticationController {
 			// perform standard Spring Authentication
 			Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
 			SecurityContextHolder.getContext().setAuthentication(authentication);
+
 			JwtUser jwtUser = userDetailsService.loadUserByUsername(jwtAuthenticationRequest.getUsername());
 			final String token = jwtTokenUtilility.generateToken(jwtUser, device);
-        
-			return ResponseEntity.ok(new JwtAuthenticationResponse(token));
+
+			final Cookie cookie = new Cookie("token", token);
+			cookie.setDomain("localhost");
+			cookie.setPath("/");
+			//cookie.setSecure(true); // enable later
+			cookie.setHttpOnly(true);
+			//cookie.setMaxAge(-1);
+			response.addCookie(cookie);
+
+
+		    // Return the token
+		    return ResponseEntity.ok(new JwtAuthenticationResponse(token));
 		} catch (BadCredentialsException e) {
+log.info("Authentication bad!");
 			/*
 			ErrorDetail errorDetail = new ErrorDetail();
 			errorDetail.setDetail("Bad Credentials");
