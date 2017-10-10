@@ -48,7 +48,8 @@ public class JwtAuthenticationTokenFilter extends UsernamePasswordAuthentication
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		if (SecurityContextHolder.getContext().getAuthentication() == null) {
+		if (SecurityContextHolder.getContext()
+				.getAuthentication() == null) {
 			HttpServletRequest httpRequest = (HttpServletRequest) request;
 
 			String cookieToken = getCookieValue(httpRequest, "token");
@@ -61,10 +62,9 @@ public class JwtAuthenticationTokenFilter extends UsernamePasswordAuthentication
 			log.info("JWT role is {}.", role);
 
 			// valid token and not authorized yet, let's authorize request
-			if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+			if (username != null && SecurityContextHolder.getContext()
+					.getAuthentication() == null) {
 				log.info("Start Dance");
-				// if (jwtTokenUtilility.validateToken(cookieToken,
-				// userDetails)) {
 				List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 				SimpleGrantedAuthority simpleGrantedAuthority;
 				if (role.equals(User.ROLE_ADMIN)) {
@@ -81,9 +81,10 @@ public class JwtAuthenticationTokenFilter extends UsernamePasswordAuthentication
 				authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));
 				SecurityContextHolder.getContext()
 						.setAuthentication(authentication);
-				// }
+
 			}
 		}
+
 		chain.doFilter(request, response);
 	}
 }
