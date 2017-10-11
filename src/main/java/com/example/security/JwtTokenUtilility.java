@@ -38,17 +38,9 @@ public class JwtTokenUtilility {
 	private static final Logger log = LoggerFactory.getLogger(JwtTokenUtilility.class);
 
 	public String getUsernameFromToken(String token) {
-		if (token == null) {
-			// fired on login form
-			return null;
-		}
-
 		String username;
 		try {
-			Jws<Claims> claims = Jwts.parser()
-					.requireIssuer(ISSUER)
-					.setSigningKey(secret)
-					.parseClaimsJws(token);
+			final Jws<Claims> claims = getClaimsFromToken(token);
 			username = claims.getBody()
 					.getSubject();
 		} catch (Exception e) {
