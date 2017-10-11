@@ -6,11 +6,9 @@ import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mobile.device.Device;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import com.example.models.JwtUser;
-import com.example.security.filters.JwtAuthenticationTokenFilter;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.IncorrectClaimException;
@@ -51,9 +49,9 @@ public class JwtTokenUtilility {
 					.requireIssuer(ISSUER)
 					.setSigningKey(secret)
 					.parseClaimsJws(token);
-			username = claims.getBody().getSubject();
+			username = claims.getBody()
+					.getSubject();
 		} catch (Exception e) {
-			System.out.println("Error message" + e.getMessage());
 			username = null;
 		}
 
@@ -77,8 +75,9 @@ public class JwtTokenUtilility {
 	public String getRoleFromToken(String token) {
 		String role;
 		try {
-			final Claims claims = getClaimsFromToken(token);
-			role = (String) claims.get(CLAIM_KEY_ROLE);
+			final Jws<Claims> claims = getClaimsFromToken(token);
+			role = claims.getBody()
+					.get(CLAIM_KEY_ROLE, String.class);
 		} catch (Exception e) {
 			role = null;
 		}
@@ -94,18 +93,18 @@ public class JwtTokenUtilility {
 	 * 
 	 * return audience; }
 	 */
-	private Claims getClaimsFromToken(String token) {
+	private Jws<Claims> getClaimsFromToken(String token) {
 		// token is not valid, quit
 		if (validateToken(token) == false) {
 			return null;
 		}
 
-		Claims claims;
+		Jws<Claims> claims;
 		try {
 			claims = Jwts.parser()
+					.requireIssuer(ISSUER)
 					.setSigningKey(secret)
-					.parseClaimsJws(token)
-					.getBody();
+					.parseClaimsJws(token);
 		} catch (Exception e) {
 			claims = null;
 		}
@@ -151,10 +150,10 @@ public class JwtTokenUtilility {
 					.setSigningKey(secret)
 					.parseClaimsJws(token);
 
-			Date expiaration = claims.getBody()
+			Date expiration = claims.getBody()
 					.getExpiration();
 
-			return expiaration.before(new Date());
+			return !expiration.before(new Date());
 		} catch (SignatureException e) {
 			log.info("Don't trust the JWT! JWT is {}.", token);
 			return false;
