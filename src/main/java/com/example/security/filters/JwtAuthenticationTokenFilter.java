@@ -55,33 +55,35 @@ public class JwtAuthenticationTokenFilter extends UsernamePasswordAuthentication
 			String cookieToken = getCookieValue(httpRequest, "token");
 			log.info("Request's Cookie is {}.", cookieToken);
 
-			String username = jwtTokenUtilility.getUsernameFromToken(cookieToken);
-			log.info("JWT login is {}.", username);
-
-			String role = jwtTokenUtilility.getRoleFromToken(cookieToken);
-			log.info("JWT role is {}.", role);
-
-			// valid token and not authorized yet, let's authorize request
-			if (username != null && SecurityContextHolder.getContext()
-					.getAuthentication() == null) {
-				log.info("Start Dance");
-				List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-				SimpleGrantedAuthority simpleGrantedAuthority;
-				if (role.equals(User.ROLE_ADMIN)) {
-					simpleGrantedAuthority = new SimpleGrantedAuthority("ROLE_ADMIN");
-				} else {
-					simpleGrantedAuthority = new SimpleGrantedAuthority("ROLE_USER");
+			if (cookieToken != null) {
+				String username = jwtTokenUtilility.getUsernameFromToken(cookieToken);
+				log.info("JWT login is {}.", username);
+	
+				String role = jwtTokenUtilility.getRoleFromToken(cookieToken);
+				log.info("JWT role is {}.", role);
+			
+				// valid token and not authorized yet, let's authorize request
+				if (username != null && role != null && SecurityContextHolder.getContext()
+						.getAuthentication() == null) {
+					log.info("Authorizing User using JWT");
+					List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+					SimpleGrantedAuthority simpleGrantedAuthority;
+					if (role.equals(User.ROLE_ADMIN)) {
+						simpleGrantedAuthority = new SimpleGrantedAuthority("ROLE_ADMIN");
+					} else {
+						simpleGrantedAuthority = new SimpleGrantedAuthority("ROLE_USER");
+					}
+	
+					authorities.add(simpleGrantedAuthority);
+	
+					UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(username,
+							null, authorities);
+	
+					authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));
+					SecurityContextHolder.getContext()
+							.setAuthentication(authentication);
+	
 				}
-
-				authorities.add(simpleGrantedAuthority);
-
-				UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(username,
-						null, authorities);
-
-				authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));
-				SecurityContextHolder.getContext()
-						.setAuthentication(authentication);
-
 			}
 		}
 
