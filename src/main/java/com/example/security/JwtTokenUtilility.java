@@ -89,14 +89,19 @@ public class JwtTokenUtilility {
 		return role;
 	}
 
-	/*
-	 * public String getAudienceFromToken(String token) { String audience; try {
-	 * final Claims claims = getClaimsFromToken(token); audience = (String)
-	 * claims.get(CLAIM_KEY_AUDIENCE); } catch (Exception e) { audience = null;
-	 * }
-	 * 
-	 * return audience; }
-	 */
+	public String getAudienceFromToken(String token) {
+		String audience;
+		try {
+			final Jws<Claims> claims = getClaimsFromToken(token);
+			audience = claims.getBody()
+					.getAudience();
+		} catch (Exception e) {
+			audience = null;
+		}
+
+		return audience;
+	}
+
 	private Jws<Claims> getClaimsFromToken(String token) {
 		// token is not valid, quit
 		if (validateToken(token) == false) {
