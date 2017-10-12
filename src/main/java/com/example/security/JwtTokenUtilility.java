@@ -50,20 +50,32 @@ public class JwtTokenUtilility {
 		return username;
 	}
 
-	/*
-	 * public Date getCreatedDateFromToken(String token) { Date created; try {
-	 * final Claims claims = getClaimsFromToken(token); created = new
-	 * Date((Long) claims.get(CLAIM_KEY_CREATED)); } catch (Exception e) {
-	 * created = null; }
-	 * 
-	 * return created; }
-	 * 
-	 * public Date getExpirationDateFromToken(String token) { Date expiration;
-	 * try { final Claims claims = getClaimsFromToken(token); expiration =
-	 * claims.getExpiration(); } catch (Exception e) { expiration = null; }
-	 * 
-	 * return expiration; }
-	 */
+	public Date getIssuedAtFromToken(String token) {
+		Date issuedAt;
+		try {
+			final Jws<Claims> claims = getClaimsFromToken(token);
+			issuedAt = claims.getBody()
+					.getIssuedAt();
+		} catch (Exception e) {
+			issuedAt = null;
+		}
+
+		return issuedAt;
+	}
+
+	public Date getExpirationFromToken(String token) {
+		Date expiration;
+		try {
+			final Jws<Claims> claims = getClaimsFromToken(token);
+			expiration = claims.getBody()
+					.getExpiration();
+		} catch (Exception e) {
+			expiration = null;
+		}
+
+		return expiration;
+	}
+
 	public String getRoleFromToken(String token) {
 		String role;
 		try {
