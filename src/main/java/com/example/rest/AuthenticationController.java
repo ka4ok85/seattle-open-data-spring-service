@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mobile.device.Device;
@@ -44,6 +45,12 @@ public class AuthenticationController {
 
 	@Autowired
 	private JwtTokenUtilility jwtTokenUtilility;
+
+	@Value("${spring.security.jwt.cookie.domain}")
+	private String cookieDomain;
+
+	@Value("${spring.security.jwt.cookie.secure}")
+	private Boolean isCookieSecureOnly;
 
 	@RequestMapping(value = "/auth", method = RequestMethod.POST)
 	public ResponseEntity<?> createAuthenticationToken(HttpServletRequest request, HttpServletResponse response,
@@ -85,11 +92,10 @@ public class AuthenticationController {
 			final String token = jwtTokenUtilility.generateToken(jwtUser, device);
 
 			final Cookie cookie = new Cookie("token", token);
-			cookie.setDomain("localhost");
+			cookie.setDomain(cookieDomain);
 			cookie.setPath("/");
-			// cookie.setSecure(true); // enable later
+			cookie.setSecure(isCookieSecureOnly);
 			cookie.setHttpOnly(true);
-			// cookie.setMaxAge(-1);
 			response.addCookie(cookie);
 
 			// Return the token
