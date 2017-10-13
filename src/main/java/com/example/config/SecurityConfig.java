@@ -66,6 +66,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 ).permitAll()
                 .antMatchers("/auth/**").permitAll() // TODO only POST
                 .antMatchers("/test").permitAll()
+                .antMatchers("/calls/**").permitAll() // Calls data is open for everyone
                 .anyRequest().authenticated()
                 .and()  
                 .formLogin()
