@@ -5,6 +5,7 @@ import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mobile.device.Device;
 import org.springframework.stereotype.Component;
 
@@ -33,7 +34,9 @@ public class JwtTokenUtilility {
 	private static final String ISSUER = "SeattleOpenData";
 
 	private Key secret = MacProvider.generateKey();
-	private Long expiration = 3600L; // 1 hour
+
+	@Value("${spring.security.jwt.expiration}")
+	private Long expiration;
 
 	private static final Logger log = LoggerFactory.getLogger(JwtTokenUtilility.class);
 
