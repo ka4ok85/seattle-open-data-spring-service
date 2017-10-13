@@ -75,8 +75,6 @@ public class AuthenticationController {
 				return new ResponseEntity<>(errorDetail, HttpStatus.UNAUTHORIZED);
 			}
 
-			log.info("Incoming request is {}.", jwtAuthenticationRequest);
-
 			// standard Spring Authentication token
 			UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
 					jwtAuthenticationRequest.getUsername(), jwtAuthenticationRequest.getPassword());

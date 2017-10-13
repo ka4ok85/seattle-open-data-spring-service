@@ -53,19 +53,15 @@ public class JwtAuthenticationTokenFilter extends UsernamePasswordAuthentication
 			HttpServletRequest httpRequest = (HttpServletRequest) request;
 
 			String cookieToken = getCookieValue(httpRequest, "token");
-			log.info("Request's Cookie is {}.", cookieToken);
 
 			if (cookieToken != null) {
 				String username = jwtTokenUtilility.getUsernameFromToken(cookieToken);
-				log.info("JWT login is {}.", username);
-	
 				String role = jwtTokenUtilility.getRoleFromToken(cookieToken);
-				log.info("JWT role is {}.", role);
-			
+
 				// valid token and not authorized yet, let's authorize request
 				if (username != null && role != null && SecurityContextHolder.getContext()
 						.getAuthentication() == null) {
-					log.info("Authorizing User using JWT");
+
 					List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 					SimpleGrantedAuthority simpleGrantedAuthority;
 					if (role.equals(User.ROLE_ADMIN)) {
