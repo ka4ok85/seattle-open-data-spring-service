@@ -53,7 +53,7 @@ public class AuthenticationController {
 	@Value("${spring.security.jwt.cookie.secure}")
 	private Boolean isCookieSecureOnly;
 
-	@RequestMapping(value = "/auth", method = RequestMethod.POST)
+	@RequestMapping(value = "/auth/login", method = RequestMethod.POST)
 	public ResponseEntity<?> createAuthenticationToken(HttpServletRequest request, HttpServletResponse response,
 			Device device) throws AuthenticationException, IOException {
 
@@ -115,6 +115,14 @@ public class AuthenticationController {
 
 	@RequestMapping(value = "/auth/logout", method = RequestMethod.POST)
 	public ResponseEntity<?> destroyAuthenticationToken(HttpServletRequest request, HttpServletResponse response) {
+
+		final Cookie cookie = new Cookie("token", "");
+		cookie.setDomain(cookieDomain);
+		cookie.setPath("/");
+		cookie.setSecure(isCookieSecureOnly);
+		cookie.setHttpOnly(true);
+		response.addCookie(cookie);
+
 		return new ResponseEntity<>(null, HttpStatus.OK);
 	}
 
