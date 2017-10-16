@@ -109,7 +109,11 @@ public class AuthenticationController {
 
 			return new ResponseEntity<>(errorDetail, HttpStatus.UNAUTHORIZED);
 		}
+	}
 
+	@RequestMapping(value = "/auth/logout", method = RequestMethod.POST)
+	public ResponseEntity<?> destroyAuthenticationToken(HttpServletRequest request, HttpServletResponse response)  {
+		return new ResponseEntity<>(null, HttpStatus.OK);
 	}
 
 }
