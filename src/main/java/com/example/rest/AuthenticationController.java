@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.exceptions.dto.AuthenticationLogin;
 import com.example.exceptions.dto.ErrorDetail;
 import com.example.models.JwtAuthenticationRequest;
 import com.example.models.JwtAuthenticationResponse;
@@ -96,8 +97,9 @@ public class AuthenticationController {
 			cookie.setHttpOnly(true);
 			response.addCookie(cookie);
 
-			// Return the token
-			return ResponseEntity.ok(new JwtAuthenticationResponse(token));
+			// Return plain Username/Role only for UI usage, for security usage
+			// Cookie must be used
+			return ResponseEntity.ok(new AuthenticationLogin(jwtUser.getUsername(), jwtUser.getRole()));
 		} catch (BadCredentialsException e) {
 			ErrorDetail errorDetail = new ErrorDetail();
 			errorDetail.setDetail("Unauthorized");
@@ -112,7 +114,7 @@ public class AuthenticationController {
 	}
 
 	@RequestMapping(value = "/auth/logout", method = RequestMethod.POST)
-	public ResponseEntity<?> destroyAuthenticationToken(HttpServletRequest request, HttpServletResponse response)  {
+	public ResponseEntity<?> destroyAuthenticationToken(HttpServletRequest request, HttpServletResponse response) {
 		return new ResponseEntity<>(null, HttpStatus.OK);
 	}
 
