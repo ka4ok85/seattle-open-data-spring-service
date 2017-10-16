@@ -1,29 +1,56 @@
 <html>
 <head>
-<script
-src="https://code.jquery.com/jquery-3.2.1.min.js"
-			  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-			  crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"
+	integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+	crossorigin="anonymous">
+	
 </script>
 <script>
-function submitform (){
-$.ajax({
-    url: 'http://localhost:8000/auth',
-    type: "POST",
-    processData: true,
-    data: '{username:"admin", password:"s3cr3t"}',
-    dataType: "json",
-    contentType: "application/json",
-    crossDomain: true,
-    xhrFields: {
-        withCredentials: true
-    },
-    success: function (a, b, c) {
-        // Do something with response
-    }
-});
-
-}
+	function submitformAdmin() {
+		$.ajax({
+			url : 'http://localhost:8000/auth/login',
+			type : "POST",
+			processData : true,
+			data : '{username:"admin", password:"s3cr3t"}',
+			dataType : "json",
+			contentType : "application/json",
+			crossDomain : true,
+			xhrFields : {
+				withCredentials : true
+			}
+		});
+	}
+	
+	
+	function submitformUser() {
+		$.ajax({
+			url : 'http://localhost:8000/auth/login',
+			type : "POST",
+			processData : true,
+			data : '{username:"user1", password:"letmein"}',
+			dataType : "json",
+			contentType : "application/json",
+			crossDomain : true,
+			xhrFields : {
+				withCredentials : true
+			}
+		});
+	}
+	
+	function submitformLogout() {
+		$.ajax({
+			url : 'http://localhost:8000/auth/logout',
+			type : "POST",
+			processData : true,
+			data : '',
+			dataType : "json",
+			contentType : "application/json",
+			crossDomain : true,
+			xhrFields : {
+				withCredentials : true
+			}
+		});
+	}
 </script>
 
 
@@ -31,14 +58,10 @@ $.ajax({
 
 
 <body>
-<form action="http://localhost:8000/auth" method="POST" id="myForm">
-<input name="username" type="text" value="admin111" />
-<input name="password" type="text" value="s3cr3t" />
-
-
-<input type="submit" onclick="submitform(); return false;" />
-
-
-</form>
+	<form action="http://localhost:8000/auth" method="POST" id="myForm">
+		<input type="submit" onclick="submitformAdmin(); return false;"	value="Log as Admin" />
+		<input type="submit" onclick="submitformUser(); return false;" value="Log as User" />
+		<input type="submit" onclick="submitformLogout(); return false;" value="Log out" />
+	</form>
 </body>
 </html>
