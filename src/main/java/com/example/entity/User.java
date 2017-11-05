@@ -1,5 +1,7 @@
 package com.example.entity;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -7,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -22,6 +25,7 @@ public class User {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@JsonIgnore
 	private Long id;
 
 	private String login;
@@ -32,12 +36,13 @@ public class User {
 
 	private String role;
 
+	@JsonIgnore
 	private String password;
 
 	@Column(name = "created_at")
 	@JsonDeserialize(using = CustomLocalDateTimeDeserializer.class)
 	@JsonSerialize(using = CustomLocalDateTimeSerializer.class)
-	private String createdAt;
+	private LocalDateTime createdAt;
 
 	public User() {
 	}
@@ -82,11 +87,11 @@ public class User {
 		this.role = role;
 	}
 
-	public String getCreatedAt() {
+	public LocalDateTime getCreatedAt() {
 		return createdAt;
 	}
 
-	public void setCreatedAt(String createdAt) {
+	public void setCreatedAt(LocalDateTime createdAt) {
 		this.createdAt = createdAt;
 	}
 
